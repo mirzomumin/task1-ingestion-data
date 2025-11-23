@@ -1,0 +1,17 @@
+volumes:
+  db_data:
+
+services:
+  db:
+    image: mysql:8.0.44-bookworm
+    container_name: db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - ${DB_PORT}:3306
