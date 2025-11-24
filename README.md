@@ -81,8 +81,6 @@ This project demonstrates a simple ETL (Extract, Transform, Load) pipeline. It r
 8.  **Generate Summary Report**:
     To produce a summary table directly from the command line, you can execute a SQL query inside the running `db` container. This query calculates the number of books and the average price per year.
 
-    Run the following command in your terminal. **Note:** Replace `user` and `password` with the `DB_USER` and `DB_PASS` values from your `.env` file.
-
     ```bash
     docker exec -it db mysql -u root -D book_db -e "select year AS publication_year, COUNT(*) AS book_count, ROUND(AVG( CASE WHEN LEFT(price, 1) != '$' THEN CAST(SUBSTRING(price, 2) AS DECIMAL(10,2)) * 1.2 WHEN LEFT(price, 1) = '$' THEN CAST(SUBSTRING(price, 2) AS DECIMAL(10,2)) ELSE NULL END ), 2) as average_price FROM books GROUP BY year ORDER BY year;
     "
