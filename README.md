@@ -34,7 +34,6 @@ This project demonstrates a simple ETL (Extract, Transform, Load) pipeline. It r
     DB_NAME=book_db
     DB_USER=user
     DB_PASS=password
-    DB_ROOT_PASS=rootpassword
     DB_PORT=3306
     ```
 
@@ -79,7 +78,17 @@ This project demonstrates a simple ETL (Extract, Transform, Load) pipeline. It r
 7.  **Verify the data** (Optional):
     You can connect to the database using a client of your choice (like DBeaver, TablePlus, or the `mysql` CLI) with the credentials you set in the `.env` file (using port `3306` on `localhost`) to verify that the `books` table has been created and populated.
 
-8.  **Shut down the services**:
+8.  **Generate Summary Report**:
+    To produce a summary table directly from the command line, you can execute a SQL query inside the running `db` container. This query calculates the number of books and the average price per year.
+
+    Run the following command in your terminal. **Note:** Replace `user` and `password` with the `DB_USER` and `DB_PASS` values from your `.env` file.
+
+    ```bash
+    docker exec -it db mysql -u root -D book_db -e "select year AS publication_year, COUNT(*) AS book_count, ROUND(AVG( CASE WHEN LEFT(price, 1) != '$' THEN CAST(SUBSTRING(price, 2) AS DECIMAL(10,2)) * 1.2 WHEN LEFT(price, 1) = '$' THEN CAST(SUBSTRING(price, 2) AS DECIMAL(10,2)) ELSE NULL END ), 2) as average_price FROM books GROUP BY year ORDER BY year;
+    "
+    ```
+
+9.  **Shut down the services**:
     To stop and remove the container, run:
 
     ```bash
